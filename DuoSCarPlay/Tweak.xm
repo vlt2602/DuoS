@@ -121,11 +121,15 @@ static void DSLog(NSString *message) {
 - (UIWindow *)carWindow {
     UIApplication *app = UIApplication.sharedApplication;
     if (!app || app.applicationState != UIApplicationStateActive) return nil;
-    NSArray<UIWindow *> *windows = app.windows;
-    for (UIWindow *w in windows.reverseObjectEnumerator) {
-        if (![w isKindOfClass:UIWindow.class] || w.hidden || w.alpha < .1 ||
-            w.bounds.size.width <= 0 || w.bounds.size.height <= 0) continue;
-        return w;
+    for (UIScene *scene in app.connectedScenes) {
+        if (![scene isKindOfClass:UIWindowScene.class] ||
+            scene.activationState != UISceneActivationStateForegroundActive) continue;
+        UIWindowScene *windowScene = (UIWindowScene *)scene;
+        for (UIWindow *w in windowScene.windows.reverseObjectEnumerator) {
+            if (![w isKindOfClass:UIWindow.class] || w.hidden || w.alpha < .1 ||
+                w.bounds.size.width <= 0 || w.bounds.size.height <= 0) continue;
+            return w;
+        }
     }
     return nil;
 }
