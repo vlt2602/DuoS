@@ -1,7 +1,10 @@
-#import <QuartzCore/QuartzCore.h>
+#import <Foundation/Foundation.h>
+#import "DuoSHUDRenderer.h"
 
-// Bước 1: chưa tạo layer hiển thị, chưa chạy timer.
-// Bước 4 sẽ xây dựng widget CALayer trong tiến trình SpringBoard.
+/* A verified CarPlay host must call DuoSAttachHUDToCarPlayView().
+ * No unverified window injection or high-frequency timer. */
 %ctor {
-    // Cố ý không thực hiện thao tác nào.
+    @autoreleasepool {
+        /* Inert until a verified CarPlay host is wired up. */
+    }
 }

@@ -52,11 +52,17 @@ jobs:
           test -f "$THEOS/makefiles/common.mk"
           test -d "$THEOS/sdks/iPhoneOS16.5.sdk"
 
-      - name: Validate repository and property lists
+      - name: Validate files and plists
         shell: bash
         run: |
           set -euo pipefail
           python3 scripts/validate.py
+
+      - name: Run HUD and touch algorithm tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tests/run.sh
 
       - name: Compile and package rootless
         shell: bash
