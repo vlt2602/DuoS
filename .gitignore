@@ -1,0 +1,10 @@
+.DS_Store
+.theos/
+.obj/
+obj/
+packages/
+*.deb
+*.dSYM/
+*.swp
+*.swo
+__pycache__/
