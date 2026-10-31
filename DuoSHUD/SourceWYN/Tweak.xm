@@ -81,7 +81,7 @@ static BOOL DSLocationEnabled(void) {
     double speedKmh = location.speed * 3.6;
     unsigned value = (unsigned)lrint(speedKmh * 10.0);
     if (value > 4094) value = 4094;
-    DuoSHUDSample sample = {0};
+    DuoSHUDSample sample = {0, 0, 0, 0, 0};
     sample.speed_tenths = (uint16_t)value;
     sample.limit_kmh = 1023; /* no speed limit from raw GPS */
     sample.flags = 0;
