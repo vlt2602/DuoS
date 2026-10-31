@@ -10,6 +10,7 @@ DuoS la du an nguon mo cho iPhone 7 (A10/arm64), iOS 15.8.8, Dopamine Rootless.
 - Thu vien tinh hai vung 50/50 hoac 65/35; kiem thu tinh toan tu dong.
 - Settings: cong tac bat/tat theo doi, xem thu hai bo cuc va HUD so lieu MAU.
 - HUD render: su dung CALayer, CATextLayer, CAShapeLayer, khong co timer.
+- Kiem tra mau toc do offline, loai gia tri GPS am/NaN/qua cu (>5 giay); co automated test.
 - Khong network, khong telemetry, khong du lieu dinh vi thuc.
 
 ## Chua co
