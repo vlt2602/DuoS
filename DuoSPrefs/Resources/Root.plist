@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>title</key>
-	<string>DuoS</string>
-	<key>items</key>
-	<array>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>DuoS · Giai đoạn 1</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Chưa kích hoạt các hook chức năng.</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Hệ thống đã sẵn sàng cho các module tiếp theo.</string>
-		</dict>
-	</array>
-</dict>
-</plist>
+<plist version="1.0"><dict>
+<key>title</key><string>DuoS</string>
+<key>items</key><array>
+<dict><key>cell</key><string>PSGroupCell</string>
+<key>label</key><string>DuoS 0.2 - Experimental</string>
+<key>footerText</key><string>iPhone 7, iOS 15.8.8, Dopamine Rootless. The real CarPlay scene adapter is not enabled yet.</string></dict>
+<dict><key>cell</key><string>PSSwitchCell</string>
+<key>label</key><string>Enable passive HUD (experimental)</string>
+<key>defaults</key><string>com.duos.preferences</string>
+<key>key</key><string>hudEnabled</string>
+<key>default</key><false/></dict>
+<dict><key>cell</key><string>PSSwitchCell</string>
+<key>label</key><string>Allow DuoS-owned location (future)</string>
+<key>defaults</key><string>com.duos.preferences</string>
+<key>key</key><string>locationEnabled</string>
+<key>default</key><false/></dict>
+<dict><key>cell</key><string>PSGroupCell</string>
+<key>label</key><string>Safety</string>
+<key>footerText</key><string>All optional features fail closed. Nothing overrides third-party location permissions. Do not interact with this interface while driving.</string></dict>
+<dict><key>cell</key><string>PSStaticTextCell</string>
+<key>label</key><string>Safe boot: enabled by default</string></dict>
+<dict><key>cell</key><string>PSStaticTextCell</string>
+<key>label</key><string>CarPlay adapter: awaiting device validation</string></dict>
+</array></dict></plist>

@@ -1,43 +1,51 @@
-# DuoS
+# DuoS — iPhone 7 / iOS 15.8.8 / Dopamine Rootless
 
-DuoS is an independent, open-source, offline-first CarPlay multitasking and
-lightweight HUD project for iPhone 7 (A10, arm64), iOS 15.8.8, Dopamine Rootless.
+**Version 0.2.0 (experimental, not a complete CarPlay split-screen tweak).**
+Independent open-source project. Modules 1 (DRM) and 2 (server interception) are
+**out of scope** and are not included.
 
-## Current status
+## Module status
 
-**Step 1 only:** this repository contains a buildable scaffold and minimal
-Settings bundle. The 4 hook libraries contain **no active hook or functionality**.
-Do not expect split screen, car UI input, GPS collection or a speed HUD yet.
+| Module | Available now | Still missing |
+|---|---|---|
+| 3 — GPS | CarPlay verification state bus; opt-in location-controller helper for DuoS-owned apps | Confirmed CarPlay callback on iOS 15.8.8, integration into an app owning CLLocationManager |
+| 4 — HUD | Event-driven 64-bit notify IPC, freshness check, CALayer HUD renderer attach API | Validated CarPlay host view and real consented speed data producer |
+| 5 — Touch | Pure coordinate transform with inset/rotation handling, native tests | Event-to-Scene adapter and calibration on actual car screen |
+| 6 — Failsafe | Persistent boot marker, opt-out on interrupted launch, local logs | Hardware fault-injection verification |
 
-## Build through GitHub Actions
+**Important:** Core, Apps and WYN modules do not install private SpringBoard
+Scene hooks or alter WYN's existing location manager. No app is launched into a
+second CarPlay pane yet. All experimental features default OFF.
 
-1. Create a GitHub repository and upload the **contents** of this DuoS folder.
-2. Commit to `main` (or `master`).
-3. Navigate to `Actions` -> `Build DuoS Rootless DEB` -> choose a run.
-4. Download the `DuoS-rootless-arm64` artifact after the run succeeds.
-5. When ready to publish a pre-release, push a tag such as `v0.1.0`.
-   The same workflow uploads `packages/*.deb` to GitHub Releases.
+## Build and tests
 
-The release is marked pre-release because functionality is not yet implemented.
+- iOS arm64, deployment target 15.0, Theos with iPhoneOS 16.5 patched SDK.
+- GitHub Actions: `Build DuoS Rootless DEB` runs tests, compiles four
+  subprojects and uploads the `DuoS-rootless-arm64` artifact.
+- On macOS: `bash tests/run.sh && python3 scripts/validate.py && make package`.
+- Rootless package appears at `packages/*.deb`.
+- Build success is **not** a runtime validation.
 
-## Local build (macOS with Xcode + Theos)
+## Crash guard recovery
 
-- THEOS should point to your Theos folder (defaults to `$HOME/theos`).
-- Install patched SDK using `$THEOS/bin/install-sdk iPhoneOS16.5`.
-- Run `python3 scripts/validate.py`.
-- Run `make clean` and then `make package`.
-- Rootless output: `packages/*.deb`.
+DuoSCore creates `/var/mobile/Library/Preferences/.duos-booting` until
+eight seconds after launch. If SpringBoard restarts unexpectedly in that period,
+DuoS automatically disables its own features with
+`/var/mobile/Library/Preferences/.duos-disabled`.
+Log: `/var/mobile/Library/Preferences/com.duos.failsafe.log`.
 
-## Security and operational limits
+To manually re-enable for another controlled test, remove
+`.duos-disabled` and `.duos-booting` with Filza while DuoS is not loading,
+then perform one supervised Respring. **Do not remove these files after a crash
+until you have diagnosed the cause.** Disabling via Dopamine's tweak-safe mode
+is the recovery option if SpringBoard cannot start.
 
-- No license verification, online requests, telemetry, daemons or timers.
-- No entitlement spoofing, Scene creation, input forwarding or GPS hooking yet.
-- Dynamic libraries are intentionally inert placeholders.
-- Do not test driver-interactive functionality while driving.
-- Private SpringBoard APIs must be checked on actual iOS 15.8.8 before use.
-- Bundled Theos SDK 16.5 requires a compatible macOS/Xcode toolchain.
-- The online CI pipeline is separate from the on-device offline design.
+## Safety
 
-See `docs/architecture.md` for the intended module boundaries.
+CarPlay connection must be verified from a real callback; Bluetooth or
+external-screen discovery is not sufficient. When the verification is absent or
+more than 60 seconds old, GPS and HUD are off. This also means the HUD will
+not be visible until the car-scene adapter exists.
 
-License: MIT.
+Do not test interactive CarPlay controls while driving. License: MIT.
+See `docs/architecture.md` for integration boundaries and known gaps.
