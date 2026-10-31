@@ -1,0 +1,102 @@
+name: Build DuoS Rootless DEB
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build arm64 rootless
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Xcode and iPhoneOS toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-path
+          xcrun clang --version
+
+      - name: Install packaging tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew install ldid xz dpkg
+
+      - name: Install Theos and patched iOS 16.5 SDK
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          export THEOS="$HOME/theos"
+          git clone --depth 1 --recursive https://github.com/theos/theos.git "$THEOS"
+          "$THEOS/bin/install-sdk" iPhoneOS16.5
+          test -f "$THEOS/makefiles/common.mk"
+          test -d "$THEOS/sdks/iPhoneOS16.5.sdk"
+
+      - name: Validate repository and property lists
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/validate.py
+
+      - name: Compile and package rootless
+        shell: bash
+        run: |
+          set -euo pipefail
+          export THEOS="$HOME/theos"
+          make clean
+          make package
+          find packages -maxdepth 1 -name '*.deb' -type f -print
+          test "$(find packages -maxdepth 1 -name '*.deb' -type f | wc -l | tr -d ' ')" -eq 1
+          DEB="$(find packages -maxdepth 1 -name '*.deb' -type f | head -n 1)"
+          test "$(dpkg-deb --field "$DEB" Architecture)" = 'iphoneos-arm64'
+          dpkg-deb --field "$DEB" Package Version Architecture Depends
+
+      - name: Save DEB as Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DuoS-rootless-arm64
+          path: packages/*.deb
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Publish prerelease
+    if: startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download validated package
+        uses: actions/download-artifact@v4
+        with:
+          name: DuoS-rootless-arm64
+          path: release
+
+      - name: Publish tag to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.deb
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          prerelease: true
