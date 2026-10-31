@@ -1,16 +1,18 @@
-# DuoSCore – Nen tang module A
+# DuoSCore - Huong dan kiem thu 2C
 
-Trang thai: ban thu nghiem, chua chia man hinh.
+## Gioi han cua ban preview
+- Theo doi ket noi va ngat ket noi man hinh ngoai, KHONG phat hien CarPlay rieng.
+- Mac dinh khong theo doi man hinh (enabled = false).
+- Settings/DuoS co cong tac 'Theo doi man hinh ngoai'.
+- Khi bat, SpringBoard nhan Darwin Notification va dang ky UIScreenDidConnect/Disconnect.
+- Khi tat, huy dang ky va xoa trang thai; khong polling, khong timer.
+- Ho tro model 50/50 va 65/35 va phep tinh frame; chua co split screen UI.
+- Khong dung private hooks, khong inject apps, khong lay GPS, khong network.
+- Khong khang dinh an toan Runtime cho den khi kiem thu tren iOS 15.8.8.
 
-- Nap trong SpringBoard theo filter hien co.
-- Dung UIScreenDidConnectNotification / UIScreenDidDisconnectNotification de theo doi man hinh ngoai.
-- Khong polling, khong timer, khong network, khong hook API rieng tu.
-- Duy tri mo hinh bo cuc 50/50 hoac 65/35 chi trong RAM.
-- Chua khoi tao FBScene, chua giu app nen, chua lay/chuyen tiep cam ung.
-- Man hinh ngoai khong dong nghia phien CarPlay. Can kiem thu CarPlay tren may that.
-- Khong su dung khi dang dieu khien xe.
-
-## Kiem tra
-1. Pull request build tren GitHub Actions.
-2. Kiem tra log compile va dong goi rootless.
-3. Khong cai len iPhone cho toi khi da thiet ke phep thu va rollback an toan.
+## Quy trinh review
+1. Tren GitHub, mo PR #1 -> Checks; doi chieu dau xanh.
+2. Kiem tra buoc Verify two-pane geometry va Validate repository.
+3. Tranh cai dat tren iPhone chinh truoc khi co backup va ke hoach khoi phuc.
+4. Neu can thu tren xe, de xe do an toan; khong tuong tac khi dieu khien.
+5. Khong merge PR vao main khi chua thong nhat ket qua thu va kha nang rollback.
