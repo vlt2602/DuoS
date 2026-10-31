@@ -58,6 +58,15 @@ jobs:
           set -euo pipefail
           python3 scripts/validate.py
 
+      - name: Verify two-pane geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          clang -std=c11 -Wall -Wextra -Werror -I DuoSCore \
+            tests/geometry_test.c DuoSCore/DuoSGeometry.c \
+            -lm -o /tmp/duos-geometry-test
+          /tmp/duos-geometry-test
+
       - name: Compile and package rootless
         shell: bash
         run: |
