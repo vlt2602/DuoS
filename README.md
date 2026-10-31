@@ -1,43 +1,25 @@
-# DuoS
+# DuoS 0.4.0 — nguồn mở / Rootless
 
-DuoS is an independent, open-source, offline-first CarPlay multitasking and
-lightweight HUD project for iPhone 7 (A10, arm64), iOS 15.8.8, Dopamine Rootless.
+**Hiện trạng:** Ứng dụng iPhone có dữ liệu tốc độ GPS thật theo yêu cầu; bộ khung CarPlay theo API chính thức đã được khai báo nhưng không được phép hoạt động nếu chưa có entitlement phù hợp. Chưa có tính năng chia nhiều app thật trong CarPlay.
 
-## Current status
+## Đã làm
+- DuoS.app, giao diện bố cục 50/50, 65/35, 50/25/25.
+- GPS thực của thiết bị iPhone: chỉ hoạt động khi người dùng chạm Bật GPS, hỏi quyền While In Use và dừng ngay lúc app vào nền. Không thu thập/lưu tọa độ hoặc gửi dữ liệu mạng.
+- HUD vẽ bằng CALayer, CATextLayer, CAShapeLayer, không timer.
+- Info.plist: Phone UIWindowScene, CPTemplateApplicationScene; CPListTemplate trên xe dùng nếu hệ thống cho phép Scene.
+- Theos Rootless, ARM64, iOS 15.0+, CI GitHub Actions với kiểm thử geometry, speed validation và nội dung .deb.
+- Tweak SpringBoard vẫn chỉ theo dõi màn hình ngoài khi bật. Không hook scene hoặc UIApplicationEvent.
 
-**Step 1 only:** this repository contains a buildable scaffold and minimal
-Settings bundle. The 4 hook libraries contain **no active hook or functionality**.
-Do not expect split screen, car UI input, GPS collection or a speed HUD yet.
+## Không triển khai
+- Bypass quyền CarPlay, chuyển tiếp sự kiện để mở ứng dụng bất kỳ, tắt biện pháp an toàn của hệ thống.
+- Chạy nền vô hạn, tự động bật GPS, thu thập telemetry/mạng.
+- Không tuyên bố clone hoàn chỉnh SidePlay2 từ file nhị phân.
 
-## Build through GitHub Actions
+## Hướng dẫn kiểm thử
+1. Mở Pull Request #1, Actions, xem run mới nhất màu xanh.
+2. Cài .deb trên máy thử có phương án khôi phục.
+3. Mở DuoS.app; xác minh có Bật GPS thực. Khi xin quyền, chọn Khi dùng ứng dụng nếu đồng ý.
+4. Bật GPS rồi kiểm tra số tốc độ thực; về màn hình chính phải ngừng cập nhật.
+5. Chỉ kiểm thử CarPlay Scene khi sở hữu entitlement ứng dụng phù hợp.
 
-1. Create a GitHub repository and upload the **contents** of this DuoS folder.
-2. Commit to `main` (or `master`).
-3. Navigate to `Actions` -> `Build DuoS Rootless DEB` -> choose a run.
-4. Download the `DuoS-rootless-arm64` artifact after the run succeeds.
-5. When ready to publish a pre-release, push a tag such as `v0.1.0`.
-   The same workflow uploads `packages/*.deb` to GitHub Releases.
-
-The release is marked pre-release because functionality is not yet implemented.
-
-## Local build (macOS with Xcode + Theos)
-
-- THEOS should point to your Theos folder (defaults to `$HOME/theos`).
-- Install patched SDK using `$THEOS/bin/install-sdk iPhoneOS16.5`.
-- Run `python3 scripts/validate.py`.
-- Run `make clean` and then `make package`.
-- Rootless output: `packages/*.deb`.
-
-## Security and operational limits
-
-- No license verification, online requests, telemetry, daemons or timers.
-- No entitlement spoofing, Scene creation, input forwarding or GPS hooking yet.
-- Dynamic libraries are intentionally inert placeholders.
-- Do not test driver-interactive functionality while driving.
-- Private SpringBoard APIs must be checked on actual iOS 15.8.8 before use.
-- Bundled Theos SDK 16.5 requires a compatible macOS/Xcode toolchain.
-- The online CI pipeline is separate from the on-device offline design.
-
-See `docs/architecture.md` for the intended module boundaries.
-
-License: MIT.
+Xem docs/sideplay2-gap-analysis.md để biết ma trận chức năng.

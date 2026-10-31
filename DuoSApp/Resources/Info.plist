@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>CFBundleIdentifier</key><string>com.duos.app</string>
+  <key>CFBundleExecutable</key><string>DuoS</string>
+  <key>CFBundleName</key><string>DuoS</string>
+  <key>CFBundleDisplayName</key><string>DuoS</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleDevelopmentRegion</key><string>vi</string>
+  <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
+  <key>CFBundleShortVersionString</key><string>0.4.0</string>
+  <key>CFBundleVersion</key><string>4</string>
+  <key>MinimumOSVersion</key><string>15.0</string>
+  <key>LSRequiresIPhoneOS</key><true/>
+  <key>UIStatusBarStyle</key><string>UIStatusBarStyleLightContent</string>
+  <key>UISupportedInterfaceOrientations</key>
+  <array><string>UIInterfaceOrientationPortrait</string></array>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>DuoS chi dung vi tri khi ban bam Bat GPS de hien thi toc do tren iPhone; khong luu toa do.</string>
+  <key>CFBundleIcons</key>
+  <dict><key>CFBundlePrimaryIcon</key><dict>
+    <key>CFBundleIconFiles</key>
+    <array><string>AppIcon60x60</string></array>
+  </dict></dict>
+  <key>UIApplicationSceneManifest</key><dict>
+    <key>UIApplicationSupportsMultipleScenes</key><true/>
+    <key>UISceneConfigurations</key><dict>
+      <key>UIWindowSceneSessionRoleApplication</key><array><dict>
+        <key>UISceneClassName</key><string>UIWindowScene</string>
+        <key>UISceneConfigurationName</key><string>DuoSPhone</string>
+        <key>UISceneDelegateClassName</key><string>DuoSPhoneSceneDelegate</string>
+      </dict></array>
+      <key>CPTemplateApplicationSceneSessionRoleApplication</key><array><dict>
+        <key>UISceneClassName</key><string>CPTemplateApplicationScene</string>
+        <key>UISceneConfigurationName</key><string>DuoSCarPlay</string>
+        <key>UISceneDelegateClassName</key><string>DuoSCarPlaySceneDelegate</string>
+      </dict></array>
+    </dict>
+  </dict>
+</dict></plist>

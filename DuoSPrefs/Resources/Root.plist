@@ -2,28 +2,39 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>title</key>
-	<string>DuoS</string>
-	<key>items</key>
-	<array>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>DuoS · Giai đoạn 1</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Chưa kích hoạt các hook chức năng.</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Hệ thống đã sẵn sàng cho các module tiếp theo.</string>
-		</dict>
-	</array>
+  <key>title</key><string>DuoS</string>
+  <key>items</key>
+  <array>
+    <dict>
+      <key>cell</key><string>PSGroupCell</string>
+      <key>label</key><string>DuoS · Thử nghiệm an toàn</string>
+    </dict>
+    <dict>
+      <key>cell</key><string>PSSwitchCell</string>
+      <key>label</key><string>Theo dõi màn hình ngoài</string>
+      <key>key</key><string>enabled</string>
+      <key>default</key><false/>
+      <key>get</key><string>readPreferenceValue:</string>
+      <key>set</key><string>setPreferenceValue:specifier:</string>
+    </dict>
+    <dict>
+      <key>cell</key><string>PSButtonCell</string>
+      <key>label</key><string>Xem thử HUD (không GPS)</string>
+      <key>action</key><string>showHUDPreview:</string>
+    </dict>
+    <dict>
+      <key>cell</key><string>PSButtonCell</string>
+      <key>label</key><string>Xem thử chia màn hình</string>
+      <key>action</key><string>showLayoutPreview:</string>
+    </dict>
+    <dict>
+      <key>cell</key><string>PSGroupCell</string>
+      <key>label</key><string>Chỉ thử nghiệm khi xe đỗ an toàn.</string>
+    </dict>
+    <dict>
+      <key>cell</key><string>PSStaticTextCell</string>
+      <key>label</key><string>Chưa chia màn hình hoặc nhúng ứng dụng.</string>
+    </dict>
+  </array>
 </dict>
 </plist>

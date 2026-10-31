@@ -13,6 +13,10 @@ on:
       - master
   workflow_dispatch:
 
+concurrency:
+  group: duos-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -58,6 +62,24 @@ jobs:
           set -euo pipefail
           python3 scripts/validate.py
 
+      - name: Verify two-pane geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          clang -std=c11 -Wall -Wextra -Werror -I DuoSCore \
+            tests/geometry_test.c DuoSCore/DuoSGeometry.c \
+            -lm -o /tmp/duos-geometry-test
+          /tmp/duos-geometry-test
+
+      - name: Verify offline speed sample validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          clang -std=c11 -Wall -Wextra -Werror -I Shared \
+            tests/speed_math_test.c Shared/DuoSSpeedMath.c \
+            -lm -o /tmp/duos-speed-test
+          /tmp/duos-speed-test
+
       - name: Compile and package rootless
         shell: bash
         run: |
@@ -70,6 +92,14 @@ jobs:
           DEB="$(find packages -maxdepth 1 -name '*.deb' -type f | head -n 1)"
           test "$(dpkg-deb --field "$DEB" Architecture)" = 'iphoneos-arm64'
           dpkg-deb --field "$DEB" Package Version Architecture Depends
+          dpkg-deb --contents "$DEB" > /tmp/duos-package-contents.txt
+          for required in DuoSCore.dylib DuoSApps.dylib DuoSHUD.dylib DuoSHUDWYN.dylib DuoSPrefs.bundle DuoS.app/DuoS DuoS.app/Info.plist DuoS.app/AppIcon60x60@2x.png; do
+            grep -Fq "$required" /tmp/duos-package-contents.txt || {
+              echo "ERROR: Missing required payload: $required"
+              exit 1
+            }
+          done
+          echo "DuoS payload validation passed."
 
       - name: Save DEB as Actions artifact
         uses: actions/upload-artifact@v4
