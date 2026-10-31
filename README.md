@@ -1,72 +1,66 @@
-# DuoS 0.3.0 — iPhone 7 / iOS 15.8.8 / Dopamine Rootless
+# DuoS 0.4.0 — Bố cục chia hai ô + bong bóng ứng dụng CarPlay
 
-Open-source local **CarPlay diagnostics and HUD prototype**.
-Includes only Modules 3–6; no DRM/license bypass, fake server replies or telemetry.
+Target: iPhone 7 (A10, arm64), iOS 15.8.8, Dopamine Rootless.
+Modules 1 (DRM) and 2 (server interception) are NOT included.
 
-## What actually works in source
+## New in 0.4.0
 
-1. **Module 3 — GPS**: a dedicated, opt-in CoreLocation manager starts
-   only inside WYN, when WYN has Always location permission,
-   `UIBackgroundModes=location`, the user enables GPS, and the CarPlayApp
-   observation is recent. Stops on disconnect/expiry (30-second watchdog).
-   It never hooks or modifies WYN's own CLLocationManager.
-2. **Module 4 — HUD**: WYN can publish real GPS speed (when permitted) through
-   Darwin notification 64-bit state; the CarPlayApp module attaches a simple
-   noninteractive speed label to a visible CarPlayApp window. An opt-in
-   connection-status label helps diagnose the runtime.
-3. **Module 5 — Touch**: normalised 0..1000 coordinate mapping plus a
-   user-enabled, parked-only touch calibration overlay in CarPlayApp.
-   **It does not forward touches into arbitrary applications.**
-4. **Module 6 — Failsafe**: SpringBoard boot guard and local safety logs,
-   and feature shutdown while disabled.
+- Vietnamese toggle **Hiển thị bong bóng DuoS và chia hai ô** (OFF by default).
+- On active `com.apple.CarPlayApp` window, a floating **DuoS** button opens
+  a split-screen layout preview with independently selectable **left/right** panes.
+- 50/50, 60/40 and 40/60 layout ratios (both panes visible).
+- The picker lists only **installed** apps from these four allowlisted bundle IDs:
+  - Waze: `com.waze.iphone`
+  - VietMap Live: `vn.vietmap.live`
+  - GOFA: `com.lumi.GOFA`
+  - WYN: `com.wynauto.wyn`
+- Installed detection uses `LSApplicationProxy` with exact bundle ID and
+  non-null bundle URL; if unavailable the picker shows NO applications,
+  never a fabricated installed status.
+- Picker selections are session-only. Normal CarPlay touches outside the
+  overlay continue to pass through.
+- No app is installed, launched or modified by this picker.
 
-The entire Preferences pane is in Vietnamese. All user-facing experimental
-toggles **default to off**.
+**Very important: This release is NOT yet true two-app Scene Hosting.**
+The two panes are interactive layout placeholders, not live application
+frames. The status **Chưa có Scene trực tiếp** is intentional. Implementing
+interactive, simultaneous remote app windows requires a verified SpringBoard /
+FrontBoard scene-hosting adapter for iOS 15.8.8, plus real vehicle testing.
+Compiling on GitHub cannot validate private selectors on the phone.
 
-## Critical limitation
+## How to verify, only while parked
 
-This does **not** implement DuoDash/SidePlay2 multi-application Scene Hosting,
-two-app split screen, or injection of iPhone apps into CarPlay. Those are
-separate major features and cannot be honestly inferred from Modules 3–6.
+1. Open DuoS in iPhone Settings, enable the bubble option.
+2. Reconnect CarPlay while the vehicle is parked.
+3. Tap the DuoS bubble, choose the left or right pane.
+4. Only installed candidates should appear. Select a candidate and inspect
+   its name in the chosen pane. Try each layout ratio and the close button.
+5. If no bubble appears, inspect the file
+   `/var/mobile/Library/Preferences/com.duos.carplay.log` with Filza and
+   the iPhone DuoS status dialog. Actual CarPlayApp injection is unverified.
 
-The `com.apple.CarPlayApp` filter and visible-window detection must be
-confirmed on a REAL iPhone 7 / iOS 15.8.8 and connected car. Window activity
-is a provisional indicator, **not verified physical vehicle connection**.
-A green GitHub Actions build does not verify this runtime behavior.
+Never operate the picker or calibration controls while driving. Disable the
+feature in Settings before normal driving.
 
-## How to test (vehicle parked)
+## Existing modules 3–6
 
-1. Open GitHub Actions, successful `Build DuoS Rootless DEB`, download artifact
-   `DuoS-rootless-arm64`.
-2. Install `com.duos.tweak` using Sileo, Respring.
-3. On iPhone Settings -> DuoS -> **Kiểm tra trạng thái DuoS**.
-4. Enable **Hiển thị nhãn kết nối trên CarPlay**, then reconnect CarPlay
-   while the vehicle is parked. A small label should appear on the CarPlayApp
-   window if it exists and is active.
-5. Check connection state again on iPhone. If disconnected, record
-   `/var/mobile/Library/Preferences/com.duos.carplay.log` (Filza) to
-   diagnose whether CarPlayApp injected.
-6. If available, enable `Bật màn hình kiểm tra điểm chạm` to inspect
-   coordinates; turn it **off from iPhone Settings immediately afterward**.
-7. To test live speed, enable both GPS and HUD, run WYN with previously
-   granted Always location permission and verified location background mode.
-   Real speed needs the location publisher; absent publisher, HUD stays hidden.
-
-**Do not use touch calibration or adjust the UI while driving.**
+- 3: opt-in, CarPlay-state-aware location manager for WYN only.
+- 4: local, 64-bit Darwin notify HUD data + view renderer.
+- 5: dynamic coordinate math + parked-only calibration overlay.
+- 6: SpringBoard boot guard, crash marker and failsafe log.
 
 ## Build
 
-`bash tests/run.sh && python3 scripts/validate.py && make package`.
+GitHub Actions validates plists and C algorithm tests, then builds an
+`iphoneos-arm64` Rootless DEB with Theos + SDK 16.5. Run locally:
+`python3 scripts/validate.py && bash tests/run.sh && make package`.
 
-GitHub Actions installs Theos SDK 16.5 and builds arm64 Rootless.
-The output is a development `.deb`, not a certified vehicle product.
+Do not interpret a successful build as on-device CarPlay compatibility.
 
-## Recovery
+## Fail-safe recovery
 
-On repeated quick SpringBoard failure, DuoS creates
-`/var/mobile/Library/Preferences/.duos-disabled` to disable itself.
-Inspect `/var/mobile/Library/Preferences/com.duos.failsafe.log`.
-Use Dopamine's tweak-disabled launch if the phone cannot reach the Home Screen.
-Only clear the disable marker after diagnosing the cause.
+Use Dopamine's tweak-disabled launch if SpringBoard fails. DuoS also uses:
+`/var/mobile/Library/Preferences/.duos-disabled`
+and `/var/mobile/Library/Preferences/com.duos.failsafe.log`.
 
-License: MIT. See `docs/architecture.md`.
+License: MIT.

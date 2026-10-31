@@ -3,6 +3,7 @@
 #import "../DuoSHUD/Renderer/DuoSHUDRenderer.h"
 #import "../Shared/DuoSCarPlayState.h"
 #import "../Shared/DuoSTouchMapper.h"
+#import "DSSplitOverlay.h"
 #import <CoreFoundation/CoreFoundation.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -85,6 +86,7 @@ static void DSLog(NSString *message) {
 @interface DSCarPlayBridge : NSObject
 @property(nonatomic,strong) UILabel *status;
 @property(nonatomic,strong) DSTouchCalibrationView *calibration;
+@property(nonatomic,strong) DSSplitOverlay *split;
 @property(nonatomic,weak) UIWindow *currentWindow;
 @property(nonatomic,strong) dispatch_source_t heartbeat;
 @property(nonatomic) BOOL lastActive;
@@ -137,6 +139,7 @@ static void DSLog(NSString *message) {
     [self.status removeFromSuperview];
     [self.calibration removeFromSuperview];
     DuoSDetachHUD();
+    [self.split detach];
     self.currentWindow = nil;
 }
 - (void)refresh {
@@ -155,6 +158,7 @@ static void DSLog(NSString *message) {
     BOOL showStatus = DSFlag(@"statusOverlayEnabled");
     BOOL calibration = DSFlag(@"calibrationEnabled");
     BOOL hud = DSFlag(@"hudEnabled");
+    BOOL split = DSFlag(@"splitEnabled");
     if (self.currentWindow != window) {
         [self removeUI];
         self.currentWindow = window;
@@ -175,6 +179,7 @@ static void DSLog(NSString *message) {
     } else [self.status removeFromSuperview];
 
     if (calibration) {
+        [self.split detach];
         DuoSDetachHUD();
         if (!self.calibration || self.calibration.superview != window) {
             [self.calibration removeFromSuperview];
@@ -186,6 +191,10 @@ static void DSLog(NSString *message) {
         self.calibration = nil;
         if (hud) DuoSAttachHUDToCarPlayView(window);
         else DuoSDetachHUD();
+        if (split) {
+            if (!self.split) self.split = [DSSplitOverlay new];
+            [self.split attachToWindow:window];
+        } else [self.split detach];
     }
 }
 - (void)dealloc {
