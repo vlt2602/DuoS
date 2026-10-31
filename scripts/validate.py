@@ -43,6 +43,28 @@ for path, expected in {
     if expected not in data.get('Filter', {}).get('Bundles', []):
         errors.append(f'Wrong filter: {path}')
 
+# Kiem tra cong tac an toan: bat buoc OFF khi chua co cau hinh.
+settings_path = root / 'DuoSPrefs/Resources/Root.plist'
+if settings_path.is_file():
+    with settings_path.open('rb') as stream:
+        settings = plistlib.load(stream)
+    enabled_specs = [
+        entry for entry in settings.get('items', [])
+        if entry.get('key') == 'enabled'
+    ]
+    if len(enabled_specs) != 1:
+        errors.append('Required: exactly one enabled preference')
+    else:
+        switch = enabled_specs[0]
+        if switch.get('cell') != 'PSSwitchCell':
+            errors.append('Invalid safety control: enabled must be PSSwitchCell')
+        if switch.get('default') is not False:
+            errors.append('Unsafe default: enabled must be false')
+        if switch.get('get') != 'readPreferenceValue:':
+            errors.append('Missing settings getter')
+        if switch.get('set') != 'setPreferenceValue:specifier:':
+            errors.append('Missing settings setter')
+
 if errors:
     print('Validation failed:')
     for issue in errors:
