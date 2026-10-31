@@ -18,8 +18,13 @@
       <key>set</key><string>setPreferenceValue:specifier:</string>
     </dict>
     <dict>
+      <key>cell</key><string>PSButtonCell</string>
+      <key>label</key><string>Xem thử HUD (không GPS)</string>
+      <key>action</key><string>showHUDPreview:</string>
+    </dict>
+    <dict>
       <key>cell</key><string>PSGroupCell</string>
-      <key>label</key><string>Mặc định TẮT. Chỉ theo dõi màn hình ngoài.</string>
+      <key>label</key><string>Chỉ thử nghiệm khi xe đỗ an toàn.</string>
     </dict>
     <dict>
       <key>cell</key><string>PSStaticTextCell</string>
