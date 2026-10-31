@@ -8,6 +8,8 @@ root = Path(__file__).resolve().parent.parent
 required = [
     'Makefile', 'control', '.github/workflows/build.yml',
     'DuoSApp/Makefile', 'DuoSApp/main.m', 'DuoSApp/DuoSAppDelegate.m',
+    'DuoSApp/DuoSPhoneSceneDelegate.m', 'DuoSApp/DuoSCarPlaySceneDelegate.m',
+    'DuoSApp/DuoSSpeedProvider.m', 'DuoSApp/DuoSSpeedProvider.h',
     'DuoSApp/DuoSRootViewController.m', 'DuoSApp/Resources/Info.plist',
     'DuoSApp/Resources/AppIcon60x60@2x.png',
     'DuoSCore/Makefile', 'DuoSCore/Tweak.xm', 'DuoSCore/DuoSCore.plist',
@@ -77,8 +79,18 @@ if app_info_path.is_file():
         errors.append('Unexpected standalone DuoS app identifier')
     if app_info.get('CFBundlePackageType') != 'APPL':
         errors.append('DuoS app must be an application bundle')
-    if 'UIApplicationSceneManifest' in app_info:
-        errors.append('Standalone demo app should not claim a CarPlay scene')
+    manifest = app_info.get('UIApplicationSceneManifest', {})
+    scenes = manifest.get('UISceneConfigurations', {})
+    phone = scenes.get('UIWindowSceneSessionRoleApplication', [])
+    car = scenes.get('CPTemplateApplicationSceneSessionRoleApplication', [])
+    if not phone or phone[0].get('UISceneDelegateClassName') != 'DuoSPhoneSceneDelegate':
+        errors.append('Phone scene delegate is missing or invalid')
+    if not car or car[0].get('UISceneClassName') != 'CPTemplateApplicationScene':
+        errors.append('CarPlay scene class is missing or invalid')
+    if not car or car[0].get('UISceneDelegateClassName') != 'DuoSCarPlaySceneDelegate':
+        errors.append('CarPlay scene delegate is missing or invalid')
+    if 'NSLocationWhenInUseUsageDescription' not in app_info:
+        errors.append('Foreground GPS requires user-facing location permission text')
 
 if errors:
     print('Validation failed:')

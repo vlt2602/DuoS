@@ -1,8 +1,8 @@
 Package: com.duos.tweak
 Name: DuoS
-Version: 0.3.0
+Version: 0.4.0
 Architecture: iphoneos-arm64
-Description: Standalone iPhone preview app, offline layout models, settings and HUD test components; no live CarPlay split-screen.
+Description: Offline DuoS with real foreground GPS speed on iPhone and entitlement-gated official CarPlay scene.
 Maintainer: DuoS Contributors <noreply@github.com>
 Author: DuoS Contributors
 Section: Tweaks

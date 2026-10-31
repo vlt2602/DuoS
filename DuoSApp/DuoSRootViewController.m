@@ -2,11 +2,12 @@
 #import <QuartzCore/QuartzCore.h>
 #import "../DuoSCore/DuoSGeometry.h"
 #import "../Shared/DuoSHUDLayer.h"
+#import "DuoSSpeedProvider.h"
 
 // Giao dien xem thu THUC SU trong app, khong co quyen ve len CarPlay.
 // Dung CALayer de han che chi phi ve tren iPhone 7.
 
-@interface DuoSRootViewController : UIViewController
+@interface DuoSRootViewController : UIViewController <DuoSSpeedProviderDelegate>
 @property (nonatomic, strong) UILabel *titleText;
 @property (nonatomic, strong) UILabel *subtitleText;
 @property (nonatomic, strong) UILabel *displayStatus;
@@ -15,6 +16,9 @@
 @property (nonatomic, strong) CALayer *canvas;
 @property (nonatomic, strong) NSArray<CALayer *> *panes;
 @property (nonatomic, strong) DuoSHUDLayer *hud;
+@property (nonatomic, strong) DuoSSpeedProvider *speedProvider;
+@property (nonatomic, strong) UIButton *gpsButton;
+@property (nonatomic, strong) UILabel *gpsStatus;
 @end
 
 @implementation DuoSRootViewController
@@ -35,12 +39,12 @@
     self.view.backgroundColor = [UIColor colorWithRed:0.06 green:0.10 blue:0.17 alpha:1];
     self.titleText = [self label:@"DuoS" font:[UIFont boldSystemFontOfSize:34]
                              color:UIColor.whiteColor];
-    self.subtitleText = [self label:@"BỐ CỤC & HUD — BẢN THỬ NGHIỆM"
+    self.subtitleText = [self label:@"BỐ CỤC & HUD — GPS THỰC TRÊN IPHONE"
                                  font:[UIFont systemFontOfSize:12 weight:UIFontWeightSemibold]
                                 color:[UIColor colorWithRed:0.41 green:0.85 blue:0.76 alpha:1]];
     self.displayStatus = [self label:@"" font:[UIFont systemFontOfSize:14]
                                 color:UIColor.whiteColor];
-    self.disclaimer = [self label:@"Chỉ mô phỏng giao diện trên iPhone.\nKhông mở ứng dụng thứ hai trên CarPlay."
+    self.disclaimer = [self label:@"Bố cục đang hiển thị trên iPhone.\nChưa nhúng ứng dụng khác vào CarPlay."
                              font:[UIFont systemFontOfSize:13]
                             color:[UIColor colorWithWhite:0.69 alpha:1]];
 
@@ -81,8 +85,21 @@
     self.panes = arr;
 
     self.hud = [DuoSHUDLayer layer];
-    self.hud.speedKmh = 88; // DU LIEU MAU - KHONG CO GPS
+    self.hud.speedKmh = -1; // Khong bao gio gia lap toc do di chuyen
     [self.canvas addSublayer:self.hud];
+
+    // GPS chi duoc bat sau mot thao tac truc tiep cua nguoi dung.
+    self.speedProvider = [[DuoSSpeedProvider alloc] init];
+    self.speedProvider.delegate = self;
+    self.gpsButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.gpsButton setTitle:@"Bật GPS thực" forState:UIControlStateNormal];
+    self.gpsButton.titleLabel.font = [UIFont boldSystemFontOfSize:16];
+    [self.gpsButton addTarget:self action:@selector(toggleGPS:)
+                forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.gpsButton];
+    self.gpsStatus = [self label:@"GPS đang tắt — không dùng dữ liệu mẫu"
+                                font:[UIFont systemFontOfSize:12]
+                               color:[UIColor colorWithWhite:0.77 alpha:1]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenChanged:)
                        name:UIScreenDidConnectNotification object:nil];
@@ -117,7 +134,28 @@
     self.canvas.frame = CGRectMake((width - cw) * 0.5, top + 202, cw, ch);
     self.disclaimer.frame = CGRectMake(14, top + 202 + ch + 18,
                                        width - 28, footerHeight);
+    self.gpsButton.frame = CGRectMake(50, CGRectGetMaxY(self.disclaimer.frame) + 1,
+                                     MAX(0, width - 100), 38);
+    self.gpsStatus.frame = CGRectMake(12, CGRectGetMaxY(self.gpsButton.frame) + 2,
+                                     MAX(0, width - 24), 30);
     [self updateLayout];
+}
+
+- (void)toggleGPS:(__unused UIButton *)button {
+    if (self.speedProvider.active) {
+        [self.speedProvider stop];
+    } else {
+        [self.speedProvider startWithUserAction];
+    }
+    [self.gpsButton setTitle:(self.speedProvider.active ? @"Tắt GPS" : @"Bật GPS thực")
+                   forState:UIControlStateNormal];
+}
+
+- (void)duosSpeedChanged:(NSInteger)kmh detail:(NSString *)detail {
+    self.hud.speedKmh = kmh;
+    self.gpsStatus.text = detail;
+    [self.gpsButton setTitle:(self.speedProvider.active ? @"Tắt GPS" : @"Bật GPS thực")
+                   forState:UIControlStateNormal];
 }
 
 - (void)updateLayout {
@@ -163,6 +201,7 @@
 }
 
 - (void)dealloc {
+    [self.speedProvider stop];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
