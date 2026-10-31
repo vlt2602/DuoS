@@ -7,6 +7,9 @@ import sys
 root = Path(__file__).resolve().parent.parent
 required = [
     'Makefile', 'control', '.github/workflows/build.yml',
+    'DuoSApp/Makefile', 'DuoSApp/main.m', 'DuoSApp/DuoSAppDelegate.m',
+    'DuoSApp/DuoSRootViewController.m', 'DuoSApp/Resources/Info.plist',
+    'DuoSApp/Resources/AppIcon60x60@2x.png',
     'DuoSCore/Makefile', 'DuoSCore/Tweak.xm', 'DuoSCore/DuoSCore.plist',
     'DuoSApps/Makefile', 'DuoSApps/Tweak.xm', 'DuoSApps/DuoSApps.plist',
     'DuoSHUD/Makefile',
@@ -64,6 +67,18 @@ if settings_path.is_file():
             errors.append('Missing settings getter')
         if switch.get('set') != 'setPreferenceValue:specifier:':
             errors.append('Missing settings setter')
+
+# Khong duoc phep nham ban xem thu la mot app CarPlay co quyen thuc.
+app_info_path = root / 'DuoSApp/Resources/Info.plist'
+if app_info_path.is_file():
+    with app_info_path.open('rb') as stream:
+        app_info = plistlib.load(stream)
+    if app_info.get('CFBundleIdentifier') != 'com.duos.app':
+        errors.append('Unexpected standalone DuoS app identifier')
+    if app_info.get('CFBundlePackageType') != 'APPL':
+        errors.append('DuoS app must be an application bundle')
+    if 'UIApplicationSceneManifest' in app_info:
+        errors.append('Standalone demo app should not claim a CarPlay scene')
 
 if errors:
     print('Validation failed:')

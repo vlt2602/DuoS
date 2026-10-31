@@ -1,8 +1,8 @@
 Package: com.duos.tweak
 Name: DuoS
-Version: 0.2.0
+Version: 0.3.0
 Architecture: iphoneos-arm64
-Description: Offline DuoS preview: passive external-display observer, two-pane layout and CALayer HUD demos.
+Description: Standalone iPhone preview app, offline layout models, settings and HUD test components; no live CarPlay split-screen.
 Maintainer: DuoS Contributors <noreply@github.com>
 Author: DuoS Contributors
 Section: Tweaks

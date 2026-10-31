@@ -1,33 +1,27 @@
-# DuoS
+# DuoS 0.3.0 — Ứng dụng xem thử và bộ khung Rootless
 
-**Status: 0.2.0 - test preview (chua co split-screen tren CarPlay).**
+DuoS là dự án nguồn mở thử nghiệm giao diện đa vùng và HUD, nhắm tới iPhone 7, iOS 15.8.8, Dopamine Rootless.
 
-DuoS la du an nguon mo cho iPhone 7 (A10/arm64), iOS 15.8.8, Dopamine Rootless.
+## Có thể kiểm tra trong bản 0.3.0
+- Ứng dụng **DuoS** cài riêng ở màn hình chính iPhone (bundle `com.duos.app`).
+- Màn hình xem thử bố cục 50/50, 65/35 hoặc 50/25/25; chỉ là hình minh họa, không mở ứng dụng khác.
+- Bộ HUD dùng CALayer/CATextLayer/CAShapeLayer, hiển thị tốc độ mẫu 88 km/h.
+- Mục DuoS trong Cài đặt vẫn giữ, công tắc theo dõi màn hình ngoài mặc định TẮT.
+- Logic hình học và kiểm tra mẫu tốc độ có kiểm thử tự động.
+- Không kết nối máy chủ, không có cơ chế giấy phép, không thu thập GPS.
 
-## Da hoat dong o muc ma nguon
-- Build `.deb` rootless tren GitHub Actions.
-- DuoSCore: theo doi man hinh ngoai bang notification, mac dinh TAT.
-- Thu vien tinh hai vung 50/50 hoac 65/35; kiem thu tinh toan tu dong.
-- Settings: cong tac bat/tat theo doi, xem thu hai bo cuc va HUD so lieu MAU.
-- HUD render: su dung CALayer, CATextLayer, CAShapeLayer, khong co timer.
-- Kiem tra mau toc do offline, loai gia tri GPS am/NaN/qua cu (>5 giay); co automated test.
-- Khong network, khong telemetry, khong du lieu dinh vi thuc.
-
-## Chua co
-- Chua xac minh phien CarPlay rieng biet voi man hinh ngoai.
-- Chua nhung app vao FBScene, chua chia man hinh xe.
-- Chua touch relay, khong spoof entitlement, chua hook GPS cua WYN.
-- Chua kiem thu Runtime tren iPhone 7.
+## Chưa có
+- Không hiển thị được DuoS trên CarPlay bằng bản này.
+- Không sử dụng quyền CarPlay hay giả mạo quyền CarPlay.
+- Không nhúng ứng dụng, không chuyển tiếp cảm ứng và không giữ ứng dụng nền.
+- Các bước kiểm tra CarPlay thật và ổn định iPhone 7 cần xác minh trên thiết bị.
 
 ## Build
-1. Moi Pull Request kich hoat `.github/workflows/build.yml`.
-2. Khi build xanh, tai `DuoS-rootless-arm64` trong tab Actions.
-3. Giai nen de lay file DEB. Khong cai len may chinh neu chua kiem thu rollback.
+- GitHub Actions tạo gói .deb Rootless chứa cả tweak và `/var/jb/Applications/DuoS.app`.
+- Kiểm tra nội dung artifact trong Jobs trước khi cài thử.
+- Không cài bản chưa kiểm chứng lên điện thoại chính.
 
-## Viec can lam khi kiem thu tren may
-- Xem `docs/windows-qa.md`.
-- Thu khi xe do an toan; khong tuong tac khi dang lai xe.
-- Thiet ke an toan theo thu tu: Preview -> Ket noi CarPlay -> Test Scene -> Multi-app.
+## Lưu ý
+SidePlay2 đính kèm trước đây là gói đã biên dịch, không phải mã nguồn được cấp phép để sao chép. Chỉ tham khảo kiến trúc và sử dụng mã độc lập.
 
-## Giay phep
-MIT. Khong sao chep ma nguon cua tweak thuong mai.
+License: MIT.

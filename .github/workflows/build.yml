@@ -93,7 +93,7 @@ jobs:
           test "$(dpkg-deb --field "$DEB" Architecture)" = 'iphoneos-arm64'
           dpkg-deb --field "$DEB" Package Version Architecture Depends
           dpkg-deb --contents "$DEB" > /tmp/duos-package-contents.txt
-          for required in DuoSCore.dylib DuoSApps.dylib DuoSHUD.dylib DuoSHUDWYN.dylib DuoSPrefs.bundle; do
+          for required in DuoSCore.dylib DuoSApps.dylib DuoSHUD.dylib DuoSHUDWYN.dylib DuoSPrefs.bundle DuoS.app/DuoS DuoS.app/Info.plist DuoS.app/AppIcon60x60@2x.png; do
             grep -Fq "$required" /tmp/duos-package-contents.txt || {
               echo "ERROR: Missing required payload: $required"
               exit 1
