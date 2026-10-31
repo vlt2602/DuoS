@@ -1,7 +1,7 @@
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = DuoSHUD
-DuoSHUD_FILES = Tweak.xm ../../Shared/DuoSHUDLayer.m
+DuoSHUD_FILES = Tweak.xm ../../Shared/DuoSHUDLayer.m ../../Shared/DuoSSpeedMath.c
 DuoSHUD_CFLAGS = -fobjc-arc -O2 -Wall
 DuoSHUD_FRAMEWORKS = Foundation UIKit QuartzCore
 
