@@ -1,43 +1,32 @@
 # DuoS
 
-DuoS is an independent, open-source, offline-first CarPlay multitasking and
-lightweight HUD project for iPhone 7 (A10, arm64), iOS 15.8.8, Dopamine Rootless.
+**Status: 0.2.0 - test preview (chua co split-screen tren CarPlay).**
 
-## Current status
+DuoS la du an nguon mo cho iPhone 7 (A10/arm64), iOS 15.8.8, Dopamine Rootless.
 
-**Step 1 only:** this repository contains a buildable scaffold and minimal
-Settings bundle. The 4 hook libraries contain **no active hook or functionality**.
-Do not expect split screen, car UI input, GPS collection or a speed HUD yet.
+## Da hoat dong o muc ma nguon
+- Build `.deb` rootless tren GitHub Actions.
+- DuoSCore: theo doi man hinh ngoai bang notification, mac dinh TAT.
+- Thu vien tinh hai vung 50/50 hoac 65/35; kiem thu tinh toan tu dong.
+- Settings: cong tac bat/tat theo doi, xem thu hai bo cuc va HUD so lieu MAU.
+- HUD render: su dung CALayer, CATextLayer, CAShapeLayer, khong co timer.
+- Khong network, khong telemetry, khong du lieu dinh vi thuc.
 
-## Build through GitHub Actions
+## Chua co
+- Chua xac minh phien CarPlay rieng biet voi man hinh ngoai.
+- Chua nhung app vao FBScene, chua chia man hinh xe.
+- Chua touch relay, khong spoof entitlement, chua hook GPS cua WYN.
+- Chua kiem thu Runtime tren iPhone 7.
 
-1. Create a GitHub repository and upload the **contents** of this DuoS folder.
-2. Commit to `main` (or `master`).
-3. Navigate to `Actions` -> `Build DuoS Rootless DEB` -> choose a run.
-4. Download the `DuoS-rootless-arm64` artifact after the run succeeds.
-5. When ready to publish a pre-release, push a tag such as `v0.1.0`.
-   The same workflow uploads `packages/*.deb` to GitHub Releases.
+## Build
+1. Moi Pull Request kich hoat `.github/workflows/build.yml`.
+2. Khi build xanh, tai `DuoS-rootless-arm64` trong tab Actions.
+3. Giai nen de lay file DEB. Khong cai len may chinh neu chua kiem thu rollback.
 
-The release is marked pre-release because functionality is not yet implemented.
+## Viec can lam khi kiem thu tren may
+- Xem `docs/windows-qa.md`.
+- Thu khi xe do an toan; khong tuong tac khi dang lai xe.
+- Thiet ke an toan theo thu tu: Preview -> Ket noi CarPlay -> Test Scene -> Multi-app.
 
-## Local build (macOS with Xcode + Theos)
-
-- THEOS should point to your Theos folder (defaults to `$HOME/theos`).
-- Install patched SDK using `$THEOS/bin/install-sdk iPhoneOS16.5`.
-- Run `python3 scripts/validate.py`.
-- Run `make clean` and then `make package`.
-- Rootless output: `packages/*.deb`.
-
-## Security and operational limits
-
-- No license verification, online requests, telemetry, daemons or timers.
-- No entitlement spoofing, Scene creation, input forwarding or GPS hooking yet.
-- Dynamic libraries are intentionally inert placeholders.
-- Do not test driver-interactive functionality while driving.
-- Private SpringBoard APIs must be checked on actual iOS 15.8.8 before use.
-- Bundled Theos SDK 16.5 requires a compatible macOS/Xcode toolchain.
-- The online CI pipeline is separate from the on-device offline design.
-
-See `docs/architecture.md` for the intended module boundaries.
-
-License: MIT.
+## Giay phep
+MIT. Khong sao chep ma nguon cua tweak thuong mai.
