@@ -13,6 +13,10 @@ on:
       - master
   workflow_dispatch:
 
+concurrency:
+  group: duos-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -88,6 +92,14 @@ jobs:
           DEB="$(find packages -maxdepth 1 -name '*.deb' -type f | head -n 1)"
           test "$(dpkg-deb --field "$DEB" Architecture)" = 'iphoneos-arm64'
           dpkg-deb --field "$DEB" Package Version Architecture Depends
+          dpkg-deb --contents "$DEB" > /tmp/duos-package-contents.txt
+          for required in DuoSCore.dylib DuoSApps.dylib DuoSHUD.dylib DuoSHUDWYN.dylib DuoSPrefs.bundle; do
+            grep -Fq "$required" /tmp/duos-package-contents.txt || {
+              echo "ERROR: Missing required payload: $required"
+              exit 1
+            }
+          done
+          echo "DuoS payload validation passed."
 
       - name: Save DEB as Actions artifact
         uses: actions/upload-artifact@v4
