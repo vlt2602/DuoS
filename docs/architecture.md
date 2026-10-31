@@ -1,63 +1,40 @@
-# DuoS 0.2 — Technical architecture and gaps
+# DuoS 0.3 — Architecture, iPhone 7 iOS 15.8.8
 
-Target: iPhone 7 A10, arm64, iOS 15.8.8, Dopamine Rootless.
-No DRM, fake network responses, license code or external telemetry.
+## Processes
+- DuoSCore: SpringBoard startup guard, no private Scene hooks.
+- DuoSApps: pure coordinate module (no active hook into arbitrary UIKit apps).
+- DuoSHUD/SourceWYN: local opt-in CoreLocation publisher (no WYN manager override).
+- DuoSHUD/Renderer: legacy SpringBoard entry; inactive until explicitly attached.
+- DuoSCarPlay: **new**, injected into com.apple.CarPlayApp; watches active UIKit
+  windows, publishes a heartbeat, attaches a passive HUD, can display a
+  parked-only calibration overlay.
+- DuoSPrefs: Vietnamese Settings and a read-only status report.
 
-## Module 6: SpringBoard safety
+## Network, permissions, and privacy
+No external network calls, telemetry, or license module. GPS requires
+explicit user toggle, WYN existing location authorization and verified modes.
+One sample per OS location callback, no flash writes every second.
 
-DuoSCore injects only into com.apple.springboard, starts a boot marker,
-writes a local one-line log and marks a healthy start after eight seconds.
-On incomplete recent restart (< 90 seconds uptime difference), creates
-a persistent disabled flag. The guard cannot catch SIGSEGV or all launch
-failures; separate libraries must check this flag before initiating
-dangerous functionality. No FBScene hooks are registered.
+## Runtime caveats
+CarPlayApp active window is a PROCESS HEURISTIC. CarPlay class/window hierarchy
+must be confirmed on actual iOS 15.8.8. The term 'verified' in the IPC API
+means a bounded publisher heartbeat, **not cryptographic vehicle verification**.
+If the process does not load on device, no HUD or calibration overlay appears.
+Nothing here creates FBScene handles for a second iPhone app.
+The test overlay intentionally catches touches only when manually enabled,
+and is disabled by default.
 
-## Module 3: State-aware location
+## Integration stages
+1. Confirm `com.apple.CarPlayApp` process and dynamic library injection
+   with local log; adjust filter only after device evidence.
+2. Validate HUD status label, then WYN location permission and speed feed.
+3. Check touch viewport, orientations and actual car screen in parked vehicle.
+4. Test disconnect, car reconnect, GPS end and repeated SpringBoard restart.
+5. Real multi-app hosting is an independent workstream with private
+   SpringBoard/FrontBoard Scene APIs requiring on-device validation.
 
-DuoSCarPlayState uses notify_set_state/get_state with a timestamp and
-requires an authenticated **device-specific CarPlay scene callback** to
-publish connection state and refresh it at least every 60 seconds.
-The source publisher has NOT been connected to iOS 15.8.8's private
-CarPlay lifecycle. Until then, status remains disconnected.
-
-DuoSLocationController only manages its own CLLocationManager. It requires
-explicit opt-in, an app with UIBackgroundModes=location, Always authorization,
-and verified CarPlay connection. It never overwrites an unrelated manager.
-
-## Module 4: IPC + HUD
-
-DuoSHUDCodec packs one atomic 64-bit value (speed tenths, limit, flags,
-sequence, uptime). DuoSHUDTransport broadcasts notify events, latest value
-wins, without writing high-frequency temporary plist files. Stale data is
-rejected after 10 seconds.
-
-DuoSHUDRenderer uses one CATextLayer updated with animations disabled
-and only after attach to a verified CarPlay view via
-DuoSAttachHUDToCarPlayView(). This API is present but not called by a
-live CarPlay Scene adapter. No real speed producer is installed.
-
-## Module 5: Geometry
-
-DuoSTouchMap maps from the *actual viewport* (after cropping/insets)
-into logical app coordinates, handling 0/90/180/270-degree rotation.
-It rejects all points outside the viewport and non-finite geometry.
-No global sendEvent hook is installed; this is deliberate until
-private API signatures and coordinate spaces are verified on device.
-
-## Guardrails
-
-- Never create Scene objects by guessing private selectors.
-- Never hook arbitrary CLLocationManager instances in third-party apps.
-- Do not use constant hardware scale factors for touch mapping.
-- Avoid 1-second file I/O and unconditional repeating timers.
-- All optional features default OFF.
-- Tests cover the pure-C codec and touch mapping only.
-- GitHub Actions build/test does not prove correctness on an iPhone.
-
-## Next verified integration points
-
-1. iOS 15.8.8 CarPlay scene lifecycle and on-disconnect callback.
-2. Explicit publisher for consented location/speed observations.
-3. Verified CarPlay host view for HUD layer ownership.
-4. Scene coordinates + touchscreen report path from the real car display.
-5. On-device SpringBoard restart, safe mode recovery and power measurements.
+## Safety
+- Disable advanced modules automatically on unexpected rapid restart.
+- No general `sendEvent:` interception.
+- No original SidePlay2 binary patches.
+- In-car testing must be performed while parked; no driver-facing controls.

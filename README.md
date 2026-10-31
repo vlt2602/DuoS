@@ -1,51 +1,72 @@
-# DuoS — iPhone 7 / iOS 15.8.8 / Dopamine Rootless
+# DuoS 0.3.0 — iPhone 7 / iOS 15.8.8 / Dopamine Rootless
 
-**Version 0.2.0 (experimental, not a complete CarPlay split-screen tweak).**
-Independent open-source project. Modules 1 (DRM) and 2 (server interception) are
-**out of scope** and are not included.
+Open-source local **CarPlay diagnostics and HUD prototype**.
+Includes only Modules 3–6; no DRM/license bypass, fake server replies or telemetry.
 
-## Module status
+## What actually works in source
 
-| Module | Available now | Still missing |
-|---|---|---|
-| 3 — GPS | CarPlay verification state bus; opt-in location-controller helper for DuoS-owned apps | Confirmed CarPlay callback on iOS 15.8.8, integration into an app owning CLLocationManager |
-| 4 — HUD | Event-driven 64-bit notify IPC, freshness check, CALayer HUD renderer attach API | Validated CarPlay host view and real consented speed data producer |
-| 5 — Touch | Pure coordinate transform with inset/rotation handling, native tests | Event-to-Scene adapter and calibration on actual car screen |
-| 6 — Failsafe | Persistent boot marker, opt-out on interrupted launch, local logs | Hardware fault-injection verification |
+1. **Module 3 — GPS**: a dedicated, opt-in CoreLocation manager starts
+   only inside WYN, when WYN has Always location permission,
+   `UIBackgroundModes=location`, the user enables GPS, and the CarPlayApp
+   observation is recent. Stops on disconnect/expiry (30-second watchdog).
+   It never hooks or modifies WYN's own CLLocationManager.
+2. **Module 4 — HUD**: WYN can publish real GPS speed (when permitted) through
+   Darwin notification 64-bit state; the CarPlayApp module attaches a simple
+   noninteractive speed label to a visible CarPlayApp window. An opt-in
+   connection-status label helps diagnose the runtime.
+3. **Module 5 — Touch**: normalised 0..1000 coordinate mapping plus a
+   user-enabled, parked-only touch calibration overlay in CarPlayApp.
+   **It does not forward touches into arbitrary applications.**
+4. **Module 6 — Failsafe**: SpringBoard boot guard and local safety logs,
+   and feature shutdown while disabled.
 
-**Important:** Core, Apps and WYN modules do not install private SpringBoard
-Scene hooks or alter WYN's existing location manager. No app is launched into a
-second CarPlay pane yet. All experimental features default OFF.
+The entire Preferences pane is in Vietnamese. All user-facing experimental
+toggles **default to off**.
 
-## Build and tests
+## Critical limitation
 
-- iOS arm64, deployment target 15.0, Theos with iPhoneOS 16.5 patched SDK.
-- GitHub Actions: `Build DuoS Rootless DEB` runs tests, compiles four
-  subprojects and uploads the `DuoS-rootless-arm64` artifact.
-- On macOS: `bash tests/run.sh && python3 scripts/validate.py && make package`.
-- Rootless package appears at `packages/*.deb`.
-- Build success is **not** a runtime validation.
+This does **not** implement DuoDash/SidePlay2 multi-application Scene Hosting,
+two-app split screen, or injection of iPhone apps into CarPlay. Those are
+separate major features and cannot be honestly inferred from Modules 3–6.
 
-## Crash guard recovery
+The `com.apple.CarPlayApp` filter and visible-window detection must be
+confirmed on a REAL iPhone 7 / iOS 15.8.8 and connected car. Window activity
+is a provisional indicator, **not verified physical vehicle connection**.
+A green GitHub Actions build does not verify this runtime behavior.
 
-DuoSCore creates `/var/mobile/Library/Preferences/.duos-booting` until
-eight seconds after launch. If SpringBoard restarts unexpectedly in that period,
-DuoS automatically disables its own features with
-`/var/mobile/Library/Preferences/.duos-disabled`.
-Log: `/var/mobile/Library/Preferences/com.duos.failsafe.log`.
+## How to test (vehicle parked)
 
-To manually re-enable for another controlled test, remove
-`.duos-disabled` and `.duos-booting` with Filza while DuoS is not loading,
-then perform one supervised Respring. **Do not remove these files after a crash
-until you have diagnosed the cause.** Disabling via Dopamine's tweak-safe mode
-is the recovery option if SpringBoard cannot start.
+1. Open GitHub Actions, successful `Build DuoS Rootless DEB`, download artifact
+   `DuoS-rootless-arm64`.
+2. Install `com.duos.tweak` using Sileo, Respring.
+3. On iPhone Settings -> DuoS -> **Kiểm tra trạng thái DuoS**.
+4. Enable **Hiển thị nhãn kết nối trên CarPlay**, then reconnect CarPlay
+   while the vehicle is parked. A small label should appear on the CarPlayApp
+   window if it exists and is active.
+5. Check connection state again on iPhone. If disconnected, record
+   `/var/mobile/Library/Preferences/com.duos.carplay.log` (Filza) to
+   diagnose whether CarPlayApp injected.
+6. If available, enable `Bật màn hình kiểm tra điểm chạm` to inspect
+   coordinates; turn it **off from iPhone Settings immediately afterward**.
+7. To test live speed, enable both GPS and HUD, run WYN with previously
+   granted Always location permission and verified location background mode.
+   Real speed needs the location publisher; absent publisher, HUD stays hidden.
 
-## Safety
+**Do not use touch calibration or adjust the UI while driving.**
 
-CarPlay connection must be verified from a real callback; Bluetooth or
-external-screen discovery is not sufficient. When the verification is absent or
-more than 60 seconds old, GPS and HUD are off. This also means the HUD will
-not be visible until the car-scene adapter exists.
+## Build
 
-Do not test interactive CarPlay controls while driving. License: MIT.
-See `docs/architecture.md` for integration boundaries and known gaps.
+`bash tests/run.sh && python3 scripts/validate.py && make package`.
+
+GitHub Actions installs Theos SDK 16.5 and builds arm64 Rootless.
+The output is a development `.deb`, not a certified vehicle product.
+
+## Recovery
+
+On repeated quick SpringBoard failure, DuoS creates
+`/var/mobile/Library/Preferences/.duos-disabled` to disable itself.
+Inspect `/var/mobile/Library/Preferences/com.duos.failsafe.log`.
+Use Dopamine's tweak-disabled launch if the phone cannot reach the Home Screen.
+Only clear the disable marker after diagnosing the cause.
+
+License: MIT. See `docs/architecture.md`.

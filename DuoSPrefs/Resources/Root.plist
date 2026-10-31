@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-<key>title</key><string>DuoS</string>
-<key>items</key><array>
+<plist version="1.0"><dict><key>title</key><string>DuoS</string><key>items</key><array>
 <dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>DuoS 0.2 - Experimental</string>
-<key>footerText</key><string>iPhone 7, iOS 15.8.8, Dopamine Rootless. The real CarPlay scene adapter is not enabled yet.</string></dict>
+<key>label</key><string>DUOS 0.3 - KẾT NỐI CARPLAY</string>
+<key>footerText</key><string>Dành cho iPhone 7, iOS 15.8.8, Dopamine Rootless. Chỉ thử các chức năng trên xe đang đỗ. Một số kết nối CarPlay vẫn cần kiểm chứng thực tế.</string></dict>
+<dict><key>cell</key><string>PSButtonCell</string>
+<key>label</key><string>Kiểm tra trạng thái DuoS</string>
+<key>action</key><string>showDuoSStatus</string></dict>
 <dict><key>cell</key><string>PSSwitchCell</string>
-<key>label</key><string>Enable passive HUD (experimental)</string>
+<key>label</key><string>Hiển thị nhãn kết nối trên CarPlay</string>
 <key>defaults</key><string>com.duos.preferences</string>
-<key>key</key><string>hudEnabled</string>
+<key>key</key><string>statusOverlayEnabled</string>
 <key>default</key><false/></dict>
+<dict><key>cell</key><string>PSGroupCell</string>
+<key>label</key><string>MODULE 3 - TIẾT KIỆM PIN &amp; GPS</string>
+<key>footerText</key><string>Chỉ khi ứng dụng WYN đang chạy, được cấp quyền vị trí Luôn luôn và được khai báo vị trí nền. DuoS không tự cấp quyền GPS hoặc khởi chạy WYN.</string></dict>
 <dict><key>cell</key><string>PSSwitchCell</string>
-<key>label</key><string>Allow DuoS-owned location (future)</string>
+<key>label</key><string>Cho phép DuoS đọc tốc độ GPS</string>
 <key>defaults</key><string>com.duos.preferences</string>
 <key>key</key><string>locationEnabled</string>
 <key>default</key><false/></dict>
 <dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>Safety</string>
-<key>footerText</key><string>All optional features fail closed. Nothing overrides third-party location permissions. Do not interact with this interface while driving.</string></dict>
+<key>label</key><string>MODULE 4 - THÔNG TIN TỐC ĐỘ</string>
+<key>footerText</key><string>Hiển thị tốc độ thực từ nguồn GPS đã được cấp quyền. Nếu chưa có dữ liệu hợp lệ, HUD sẽ tự ẩn, không tạo số đo giả.</string></dict>
+<dict><key>cell</key><string>PSSwitchCell</string>
+<key>label</key><string>Bật hiển thị tốc độ HUD</string>
+<key>defaults</key><string>com.duos.preferences</string>
+<key>key</key><string>hudEnabled</string>
+<key>default</key><false/></dict>
+<dict><key>cell</key><string>PSGroupCell</string>
+<key>label</key><string>MODULE 5 - CÂN CHỈNH CẢM ỨNG</string>
+<key>footerText</key><string>Chế độ kiểm tra vị trí điểm chạm trên màn hình xe khi đang đỗ. Chế độ này tạm che giao diện CarPlay, không tự điều khiển ứng dụng khác.</string></dict>
+<dict><key>cell</key><string>PSSwitchCell</string>
+<key>label</key><string>Bật màn hình kiểm tra điểm chạm</string>
+<key>defaults</key><string>com.duos.preferences</string>
+<key>key</key><string>calibrationEnabled</string>
+<key>default</key><false/></dict>
+<dict><key>cell</key><string>PSGroupCell</string>
+<key>label</key><string>MODULE 6 - AN TOÀN KHỞI ĐỘNG</string>
+<key>footerText</key><string>DuoS phát hiện lỗi khởi tạo và có thể tự tắt khi SpringBoard khởi động bất thường. Không vô hiệu hóa hệ thống bảo vệ của iOS.</string></dict>
 <dict><key>cell</key><string>PSStaticTextCell</string>
-<key>label</key><string>Safe boot: enabled by default</string></dict>
+<key>label</key><string>Bảo vệ khởi động: luôn bật</string></dict>
+<dict><key>cell</key><string>PSGroupCell</string>
+<key>label</key><string>GIỚI HẠN HIỆN TẠI</string>
+<key>footerText</key><string>DuoS chưa hỗ trợ chia đôi màn hình hay nhúng hai ứng dụng vào CarPlay. Chức năng này cần một bộ quản lý phiên ứng dụng riêng, không nằm trong bốn module tối ưu 3-6.</string></dict>
 <dict><key>cell</key><string>PSStaticTextCell</string>
-<key>label</key><string>CarPlay adapter: awaiting device validation</string></dict>
+<key>label</key><string>Chia màn hình: chưa triển khai</string></dict>
 </array></dict></plist>

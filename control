@@ -1,8 +1,8 @@
 Package: com.duos.tweak
 Name: DuoS
-Version: 0.2.0
+Version: 0.3.0
 Architecture: iphoneos-arm64
-Description: Experimental Rootless iOS 15.8.8 CarPlay safety, HUD transport and geometry toolkit. No active scene hooks.
+Description: Vietnamese CarPlay diagnostics, opt-in HUD, GPS lifecycle, touch calibration and launch failsafe on Rootless iOS 15.
 Maintainer: DuoS Contributors <noreply@github.com>
 Author: DuoS Contributors
 Section: Tweaks
