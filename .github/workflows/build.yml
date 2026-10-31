@@ -67,6 +67,15 @@ jobs:
             -lm -o /tmp/duos-geometry-test
           /tmp/duos-geometry-test
 
+      - name: Verify offline speed sample validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          clang -std=c11 -Wall -Wextra -Werror -I Shared \
+            tests/speed_math_test.c Shared/DuoSSpeedMath.c \
+            -lm -o /tmp/duos-speed-test
+          /tmp/duos-speed-test
+
       - name: Compile and package rootless
         shell: bash
         run: |
