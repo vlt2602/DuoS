@@ -2,48 +2,46 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict><key>title</key><string>DuoS</string><key>items</key><array>
 <dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>DUOS 0.3 - KẾT NỐI CARPLAY</string>
-<key>footerText</key><string>Dành cho iPhone 7, iOS 15.8.8, Dopamine Rootless. Chỉ thử các chức năng trên xe đang đỗ. Một số kết nối CarPlay vẫn cần kiểm chứng thực tế.</string></dict>
-<dict><key>cell</key><string>PSButtonCell</string>
-<key>label</key><string>Kiểm tra trạng thái DuoS</string>
-<key>action</key><string>showDuoSStatus</string></dict>
+<key>label</key><string>DUOS 0.4 — CHIA MÀN HÌNH &amp; CARPLAY</string>
+<key>footerText</key><string>Dành cho iPhone 7, iOS 15.8.8, Dopamine Rootless. Chỉ thao tác trên màn hình khi xe đang đỗ. Các chức năng thử nghiệm mặc định tắt.</string></dict>
+<dict><key>cell</key><string>PSButtonCell</string><key>label</key><string>Kiểm tra trạng thái DuoS</string><key>action</key><string>showDuoSStatus</string></dict>
+<dict><key>cell</key><string>PSSwitchCell</string>
+<key>label</key><string>Hiển thị bong bóng DuoS và chia hai ô</string>
+<key>defaults</key><string>com.duos.preferences</string>
+<key>key</key><string>splitEnabled</string><key>default</key><false/></dict>
+<dict><key>cell</key><string>PSGroupCell</string>
+<key>label</key><string>MODULE CHIA MÀN HÌNH — THỬ NGHIỆM</string>
+<key>footerText</key><string>Bong bóng chọn riêng ứng dụng cho ô trái hoặc ô phải. Chỉ hiển thị Waze, VietMap Live, GOFA và WYN nếu có thể xác nhận chúng đã cài trên iPhone. Hỗ trợ bố cục 50/50, 60/40, 40/60. Bản 0.4 CHƯA nhúng hình ảnh ứng dụng chạy trực tiếp: cần xác minh Scene Hosting trên máy thật trước.</string></dict>
+<dict><key>cell</key><string>PSStaticTextCell</string>
+<key>label</key><string>Hai vùng: có giao diện chọn, chưa phát ứng dụng</string></dict>
 <dict><key>cell</key><string>PSSwitchCell</string>
 <key>label</key><string>Hiển thị nhãn kết nối trên CarPlay</string>
 <key>defaults</key><string>com.duos.preferences</string>
-<key>key</key><string>statusOverlayEnabled</string>
-<key>default</key><false/></dict>
+<key>key</key><string>statusOverlayEnabled</string><key>default</key><false/></dict>
 <dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>MODULE 3 - TIẾT KIỆM PIN &amp; GPS</string>
-<key>footerText</key><string>Chỉ khi ứng dụng WYN đang chạy, được cấp quyền vị trí Luôn luôn và được khai báo vị trí nền. DuoS không tự cấp quyền GPS hoặc khởi chạy WYN.</string></dict>
+<key>label</key><string>MODULE 3 — TIẾT KIỆM PIN &amp; GPS</string>
+<key>footerText</key><string>Chỉ khi WYN đang chạy, có quyền vị trí Luôn luôn và khai báo vị trí nền. DuoS không tự cấp quyền GPS hoặc can thiệp trình định vị của ứng dụng khác.</string></dict>
 <dict><key>cell</key><string>PSSwitchCell</string>
 <key>label</key><string>Cho phép DuoS đọc tốc độ GPS</string>
 <key>defaults</key><string>com.duos.preferences</string>
-<key>key</key><string>locationEnabled</string>
-<key>default</key><false/></dict>
+<key>key</key><string>locationEnabled</string><key>default</key><false/></dict>
 <dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>MODULE 4 - THÔNG TIN TỐC ĐỘ</string>
-<key>footerText</key><string>Hiển thị tốc độ thực từ nguồn GPS đã được cấp quyền. Nếu chưa có dữ liệu hợp lệ, HUD sẽ tự ẩn, không tạo số đo giả.</string></dict>
+<key>label</key><string>MODULE 4 — HIỂN THỊ TỐC ĐỘ</string>
+<key>footerText</key><string>Hiển thị tốc độ thực từ dữ liệu GPS có quyền truy cập hợp lệ. Không tạo số đo giả.</string></dict>
 <dict><key>cell</key><string>PSSwitchCell</string>
 <key>label</key><string>Bật hiển thị tốc độ HUD</string>
 <key>defaults</key><string>com.duos.preferences</string>
-<key>key</key><string>hudEnabled</string>
-<key>default</key><false/></dict>
+<key>key</key><string>hudEnabled</string><key>default</key><false/></dict>
 <dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>MODULE 5 - CÂN CHỈNH CẢM ỨNG</string>
-<key>footerText</key><string>Chế độ kiểm tra vị trí điểm chạm trên màn hình xe khi đang đỗ. Chế độ này tạm che giao diện CarPlay, không tự điều khiển ứng dụng khác.</string></dict>
+<key>label</key><string>MODULE 5 — CÂN CHỈNH CẢM ỨNG</string>
+<key>footerText</key><string>Thử tọa độ trên màn hình xe đang đỗ. Chế độ này tạm che giao diện CarPlay.</string></dict>
 <dict><key>cell</key><string>PSSwitchCell</string>
 <key>label</key><string>Bật màn hình kiểm tra điểm chạm</string>
 <key>defaults</key><string>com.duos.preferences</string>
-<key>key</key><string>calibrationEnabled</string>
-<key>default</key><false/></dict>
+<key>key</key><string>calibrationEnabled</string><key>default</key><false/></dict>
 <dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>MODULE 6 - AN TOÀN KHỞI ĐỘNG</string>
-<key>footerText</key><string>DuoS phát hiện lỗi khởi tạo và có thể tự tắt khi SpringBoard khởi động bất thường. Không vô hiệu hóa hệ thống bảo vệ của iOS.</string></dict>
+<key>label</key><string>MODULE 6 — AN TOÀN KHỞI ĐỘNG</string>
+<key>footerText</key><string>Bộ bảo vệ khởi động tự vô hiệu hóa DuoS khi phát hiện lỗi liên tiếp. Không vô hiệu hóa bảo vệ iOS.</string></dict>
 <dict><key>cell</key><string>PSStaticTextCell</string>
 <key>label</key><string>Bảo vệ khởi động: luôn bật</string></dict>
-<dict><key>cell</key><string>PSGroupCell</string>
-<key>label</key><string>GIỚI HẠN HIỆN TẠI</string>
-<key>footerText</key><string>DuoS chưa hỗ trợ chia đôi màn hình hay nhúng hai ứng dụng vào CarPlay. Chức năng này cần một bộ quản lý phiên ứng dụng riêng, không nằm trong bốn module tối ưu 3-6.</string></dict>
-<dict><key>cell</key><string>PSStaticTextCell</string>
-<key>label</key><string>Chia màn hình: chưa triển khai</string></dict>
 </array></dict></plist>

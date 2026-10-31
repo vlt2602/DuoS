@@ -21,7 +21,7 @@
     NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     (void)version;
     return [NSString stringWithFormat:
-      @"DuoS 0.3.0\niPhone: %@\niOS: %@\nCarPlayApp: %@\nChế độ an toàn: %@\nKhởi tạo: %@\nLưu ý: Chỉ báo phát hiện hoạt động CarPlayApp, không xác minh phần cứng xe.",
+      @"DuoS 0.4.0\niPhone: %@\niOS: %@\nCarPlayApp: %@\nChế độ an toàn: %@\nKhởi tạo: %@\nLưu ý: Chỉ báo phát hiện hoạt động CarPlayApp, không xác minh phần cứng xe.",
       UIDevice.currentDevice.model, UIDevice.currentDevice.systemVersion,
       car ? @"Đang hoạt động (chưa kiểm chứng trên xe)" : @"Chưa phát hiện",
       disabled ? @"Đã tự khóa DuoS sau lỗi" : @"Bình thường",

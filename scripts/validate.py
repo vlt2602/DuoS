@@ -13,6 +13,8 @@ required = [
     "DuoSHUD/Renderer/DuoSHUDRenderer.m","DuoSHUD/Renderer/DuoSHUD.plist",
     "DuoSHUD/SourceWYN/Makefile","DuoSHUD/SourceWYN/Tweak.xm","DuoSHUD/SourceWYN/DuoSHUDWYN.plist",
     "DuoSCarPlay/Makefile","DuoSCarPlay/Tweak.xm","DuoSCarPlay/DuoSCarPlay.plist",
+    "DuoSCarPlay/DSSplitOverlay.h","DuoSCarPlay/DSSplitOverlay.m",
+    "DuoSCarPlay/DSAppCatalog.h","DuoSCarPlay/DSAppCatalog.m",
     "DuoSPrefs/Makefile","DuoSPrefs/RootListController.m","DuoSPrefs/Resources/Info.plist","DuoSPrefs/Resources/Root.plist",
     "layout/Library/PreferenceLoader/Preferences/com.duos.prefs.plist",
     "Shared/DuoSHUDCodec.c","Shared/DuoSHUDCodec.h","Shared/DuoSHUDTransport.m","Shared/DuoSHUDTransport.h",
@@ -48,6 +50,11 @@ if prefs.exists():
     labels=[s.get("label","") for s in d.get("items",[])]
     if not any("Kiểm tra trạng thái" in s for s in labels):
         errors.append("Vietnamese diagnostic UI missing")
+    keys = {s.get("key") for s in d.get("items",[]) if isinstance(s, dict)}
+    if "splitEnabled" not in keys:
+        errors.append("Split UI switch missing")
+    if not any("bong bóng" in s.lower() for s in labels):
+        errors.append("Vietnamese four-app bubble title missing")
 if errors:
     print("Validation failed:")
     for error in errors: print(" -",error)

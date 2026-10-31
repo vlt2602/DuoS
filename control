@@ -1,8 +1,8 @@
 Package: com.duos.tweak
 Name: DuoS
-Version: 0.3.0
+Version: 0.4.0
 Architecture: iphoneos-arm64
-Description: Vietnamese CarPlay diagnostics, opt-in HUD, GPS lifecycle, touch calibration and launch failsafe on Rootless iOS 15.
+Description: Experimental Vietnamese two-pane layout and installed-app picker for CarPlay, with GPS/HUD/touch and failsafe.
 Maintainer: DuoS Contributors <noreply@github.com>
 Author: DuoS Contributors
 Section: Tweaks
