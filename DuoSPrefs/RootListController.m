@@ -4,6 +4,7 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
 #import "../Shared/DuoSHUDLayer.h"
+#import "DuoSLayoutPreviewController.h"
 
 static CFStringRef const kDuoSPrefsDomain = CFSTR("com.duos.preferences");
 static CFStringRef const kDuoSPrefsChanged = CFSTR("com.duos.preferences.changed");
@@ -91,6 +92,11 @@ static CFStringRef const kDuoSPrefsChanged = CFSTR("com.duos.preferences.changed
 
 - (void)showHUDPreview:(__unused PSSpecifier *)specifier {
     DuoSHUDPreviewController *preview = [[DuoSHUDPreviewController alloc] init];
+    [self.navigationController pushViewController:preview animated:YES];
+}
+
+- (void)showLayoutPreview:(__unused PSSpecifier *)specifier {
+    DuoSLayoutPreviewController *preview = [[DuoSLayoutPreviewController alloc] init];
     [self.navigationController pushViewController:preview animated:YES];
 }
 @end
